@@ -61,9 +61,7 @@ String get_3_digit() {
   return val;
 }
 void temp() {
-  analogWrite(red_, 255);
-  analogWrite(green_, 255 );
-  analogWrite(blue_, 255);
+
   Serial.println("temp");
   char mode = customKeypad.getKey();
   //mode 1
@@ -76,6 +74,7 @@ void temp() {
   }
   while (flag) {
     if (mode == '1') {
+      RGB_off();
       Red_b = displayWrite("Black", "R-");
       if (Red_b) {
         Green_b = displayWrite("Black", "G-");
@@ -110,9 +109,16 @@ void temp() {
 
     //mode2
     else if (mode == '2') {
+      RGB_off();
+      lcd.clear();
       boolean finish = false;
       while (not finish) {
-        lcd.clear();
+        lcd.setCursor(2,0);
+        lcd.print("   ");
+        lcd.setCursor(12,0);
+        lcd.print("   ");
+        lcd.setCursor(8,1);
+        lcd.print("   ");
         digitalWrite(green, HIGH);
         delay(300);
         int gr_avg = average(get_reading(A0));
@@ -173,13 +179,15 @@ void temp() {
           analogWrite(green_, 255 - gr_avg);
           analogWrite(blue_, 255 - bl_avg);
         }
-        
+        delay(500);
 
-        delay(1000);
+
+        
       }
     }
     //mode3
     else if (mode == '3') {
+      RGB_off();
       lcd.clear();
       lcd.setCursor(0, 0);
       String R = displayWrite("RGB", "R-");
@@ -210,8 +218,9 @@ void temp() {
 void loop() {
   temp();
   char chr = customKeypad.getKey();
-        if(chr=='#'){
-        setup();}
+  if (chr == '#') {
+    setup();
+  }
 }
 
 
@@ -283,3 +292,8 @@ byte  int_to_byte(int val) {
     return 255;
   }
 }
+void RGB_off(){
+    analogWrite(red_, 255);
+  analogWrite(green_, 255 );
+  analogWrite(blue_, 255);
+  }
